@@ -1,0 +1,34 @@
+body {
+  background-color: lightblue;
+}
+h2 {
+  text-align: center;
+}
+#control {
+  text-align: center;
+  display: inline-block;
+}
+#Hue_Filter {
+  display: inline-block;
+  float: right;
+}
+#Hue_Filter {
+  display: inline-block;
+  float: right;
+}
+#Hue_Filter {
+  display: inline-block;
+  float: right;
+}
+#Hue_Filter {
+  display: inline-block;
+  float: right;
+}
+table {
+  text-align: center;
+}
+canvas {
+  border: 10px;
+  border-color: cyan;
+  border-radius: 20px;
+}
