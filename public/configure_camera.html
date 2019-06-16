@@ -5,86 +5,85 @@
   <title>Video Capture Example</title>
   <!-- <link href="js_example_style.css" rel="stylesheet" type="text/css" /> -->
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
   <h2>Video Capture Example</h2>
   <div>
-  <div class="control"><button id="startAndStop">Start</button></div>
+  <div class="control" style="margin-left:10px;"><button id="startAndStop" class="btn btn-default btn-lg">Start Configuration</button></div>
   <textarea class="code" style="display: none;" rows="0" cols="0" id="codeEditor" spellcheck="false">
   </textarea>
+  
   </div>
-  <div class="slidecontainer">
-    <input type="range" min="0" max="255" value="12" class="slider" id="minHue">
-      <p>Min Hue Value: <span id="MinH"></p>
-    <input type="range" min="0" max="255" value="25" class="slider" id="maxHue">
-      <p>Max Hue Value: <span id="MaxH"></p>
-    <input type="range" min="0" max="255" value="78" class="slider" id="minSat">
-      <p>Min Saturation Value: <span id="MinS"></p>
-    <input type="range" min="0" max="255" value="255" class="slider" id="maxSat">
-      <p>Max Saturation Value: <span id="MaxS"></p>
-    <input type="range" min="0" max="255" value="189" class="slider" id="minVal">
-      <p>Min Value Value: <span id="MinV"></p>
-    <input type="range" min="0" max="255" value="255" class="slider" id="maxVal">
-      <p>Max Saturation Value: <span id="MaxV"></p>
-  </div>
-  <p class="err" id="errorMessage"></p>
-  <div>
-      <video id="videoInput" style="display: none;" width=300 height=300></video>
-      <!--<table cellpadding="0" cellspacing="0" width="20" border="0">!-->
-      <table>
-        <!--
-        <tr>
-          <th>Hue Filtered Frame </th>
-          <th>Saturation Filtered Frame</th>
-          <th>Value Filtered Frame</th>
-        </tr>
-        !-->
-        <tr>
+  <div class="row">
+    <div class="col-xs-12 col-md-8">
+      <p class="err" id="errorMessage"></p>
+      <div>
+        <video id="videoInput" style="display: none;" width=300 height=300></video>
+        <table>
+          <tr>
+            <td>
+              <canvas id="Hue_Filter" width=300 height=300 ></canvas>
+                <div class="caption">Hue Filter</div>
+            </td>
+            <td>
+              <canvas id="Saturation_Filter" width=300 height=300></canvas>
+                <div class="caption">Saturation Filter</div>
+            </td>
+            <td>
+              <canvas id="Value_Filter" width=300 height=300></canvas>
+                <div class="caption">Value Filter</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <canvas id="Combined_Filter" width=300 height=300></canvas>
+                <div class="caption">Combined Filter</div>
+            </td>
+            <td>
+                <canvas id="canvasOutput" width=300 height=300></canvas>
+                  <div class="caption">Final Filter</div>
+            </td>
+            <td>
+              <canvas id="whiteboard" width="320" height="240"></canvas>
+            </td>
+          </tr>
+        </table>
+    </div>
+      </div>
+                <div class="col-xs-2 col-md-2" > </div>
 
-          <td>
-            <canvas id="Hue_Filter" width=300 height=300 ></canvas>
-              <div class="caption">Hue Filter</div>
-          </td>
+          <div class="col-xs-4 col-md-2" >
+      <div class="slidecontainer">
+      <input type="range" min="0" max="255" value="12" class="slider" id="minHue">
+        <p>Min Hue Value: <span id="MinH"></p>
+      <input type="range" min="0" max="255" value="25" class="slider" id="maxHue">
+        <p>Max Hue Value: <span id="MaxH"></p>
+      <input type="range" min="0" max="255" value="78" class="slider" id="minSat">
+        <p>Min Saturation Value: <span id="MinS"></p>
+      <input type="range" min="0" max="255" value="255" class="slider" id="maxSat">
+        <p>Max Saturation Value: <span id="MaxS"></p>
+      <input type="range" min="0" max="255" value="189" class="slider" id="minVal">
+        <p>Min Value Value: <span id="MinV"></p>
+      <input type="range" min="0" max="255" value="255" class="slider" id="maxVal">
+        <p>Max Saturation Value: <span id="MaxV"></p>
+      </div>
+    </div>
 
-          <td>
-            <canvas id="Saturation_Filter" width=300 height=300></canvas>
-              <div class="caption">Saturation Filter</div>
-          </td>
+                <div class="col-xs-1 col-md-1" > </div>
 
-          <td>
-            <canvas id="Value_Filter" width=300 height=300></canvas>
-              <div class="caption">Value Filter</div>
-          </td>
+    </div>
 
-        </tr>
-
-        <tr>
-
-          <td>
-            <canvas id="Combined_Filter" width=300 height=300></canvas>
-              <div class="caption">Combined Filter</div>
-          </td>
-
-          <td>
-              <canvas id="canvasOutput" width=300 height=300></canvas>
-                <div class="caption">Final Filter</div>
-          </td>
-          <td>
-            <canvas id="whiteboard" width="320" height="240"></canvas>
-          </td>
-        </tr>
-      </table>
-  </div>
   <div class="button Container">
-    <button id="blue">Blue</button>
-    <button id="green">Green</button>
-    <button id="yellow">Yellow</button>
-    <button id="red">Red</button>
-    <button id="pink">Pink</button>
-    <button id="black">Black</button>
-    <button id="white">White</button>
-    <button id="clear">Clean Screen</button>
-    <button id="invis">Transparent</button>
+    <button id="blue" class="btn btn-primary">Blue</button>
+    <button id="green" class="btn btn-success">Green</button>
+    <button id="yellow" class="btn btn-warning">Yellow</button>
+    <button id="red" class="btn btn-danger"> Red</button>
+    <button id="pink" class="btn btn-default">Pink</button>
+    <button id="black" class="btn btn-default">Black</button>
+    <button id="white" class="btn btn-default">White</button>
+    <button id="clear" class="btn btn-default">Clean Screen</button>
+    <button id="invis" class="btn btn-link">Transparent</button>
   </div>
   <script src="https://webrtc.github.io/adapter/adapter-5.0.4.js" type="text/javascript"></script>
   <script src="../openCV/utils.js" type="text/javascript"></script>
