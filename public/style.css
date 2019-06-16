@@ -32,3 +32,22 @@ canvas {
   border-color: cyan;
   border-radius: 20px;
 }
+
+.drawingWrapper{
+  position: relative;
+  height: 262px;
+}
+
+#hoverboard {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0.35;
+}
+
+#whiteboard {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0.65;
+}

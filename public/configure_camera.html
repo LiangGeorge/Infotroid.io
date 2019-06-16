@@ -74,6 +74,29 @@
 
     </div>
 
+<<<<<<< HEAD
+=======
+        <tr>
+
+          <td>
+            <canvas id="Combined_Filter" width=300 height=300></canvas>
+              <div class="caption">Combined Filter</div>
+          </td>
+
+          <td>
+              <canvas id="canvasOutput" width=300 height=300></canvas>
+                <div class="caption">Final Filter</div>
+          </td>
+          <td>
+            <div class="drawingWrapper">
+            <canvas id="hoverboard" width="320" height="240"></canvas>
+            <canvas id="whiteboard" width="320" height="240"></canvas>
+          </div>
+          </td>
+        </tr>
+      </table>
+  </div>
+>>>>>>> a29f73c1017c35625f0be7592f777b0bae851f50
   <div class="button Container">
     <button id="blue" class="btn btn-primary">Blue</button>
     <button id="green" class="btn btn-success">Green</button>
@@ -92,6 +115,9 @@
     var colors = ["#0000ff","#009933","#ffff00","#ff0000","#e600ac", "#000000", "#ffffff"]
     var currColor = colors[5]
     var drawn = 0;
+    var hdrawn = 0;
+    var hlastX = false;
+    var hlastY = false;
     var lastX = false;
     var lastY = false;
     let video = document.getElementById('videoInput');
@@ -99,8 +125,15 @@
     let dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
     let cap = new cv.VideoCapture(video);
     var canvas = document.getElementById('whiteboard')
+    var hover = document.getElementById('hoverboard')
     var context = canvas.getContext('2d');
+    var hcontext = hover.getContext('2d')
     var points = []
+    hcontext.fillStyle = "white"
+    hcontext.fillRect(0,0,canvas.width,canvas.height)
+    hcontext.fillStyle = "black"
+    hcontext.strokeStyle= "black"
+    hcontext.beginPath()
     context.fillStyle = "white";
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = "black"
@@ -172,7 +205,28 @@
           context.fill();
           drawn +=1;
         };
-  const FPS = 5;
+
+      var hdot = function make_hdot(x, y, currColor) {
+        	hcontext.strokeStyle = currColor; //beginPath starts a new path and gets rid of all other paths
+          hcontext.fillStyle= currColor;
+          if (hdrawn !=0){
+              hcontext.beginPath();
+              console.log("Drawing");
+              hcontext.moveTo(hlastX,hlastY); //start at last point
+              hcontext.lineTo(x,y); //create a line to end point
+              hcontext.stroke(); //2 paths because one is stroke one is fill
+              hcontext.beginPath();
+              hcontext.ellipse(hlastX,hlastY,5,5,360,0,360); //draw over the last circle because if would have a red line otherwise
+              hcontext.fill();
+            }
+            hlastX=x;
+            hlastY=y;
+            hcontext.beginPath();
+            hcontext.ellipse(x,y,5,5,360,0,360);
+            hcontext.fill();
+            hdrawn +=1;
+          };
+  const FPS = 7;
     function processVideo() {
       try {
           if (!streaming) {
@@ -291,13 +345,18 @@
                   console.log("Center X:" + String(point.x))
                   console.log("Center Y:" + String(point.y))
                   dot(Number(point.x),Number(point.y),currColor)
+                  hdot(Number(point.x),Number(point.y),"black")
+                  hcontext.clearRect(0, 0, canvas.width, canvas.height);
+                  hcontext.fillStyle = "white";
+                  hcontext.fillRect(0, 0, canvas.width, canvas.height);
+                  hdot(Number(point.x),Number(point.y),"black")
+
                     //console.log(vertices[0].x)
-                  /*
-                  points.push([Number(point.x),Number(point.y)])
+                    /*
+                  points.push([Number(point.x),Number(point.y),currColor])
 
-                  if (points.length > 0){
-                    dot(points[points.length][0],points[points.length][1],currColor)
-
+                  if (points.length > 0 && (currColor != "transparent")){
+                    dot(points[points.length - 1][0],points[points.length - 1][1],"black")
                   }
                   */
                 }
