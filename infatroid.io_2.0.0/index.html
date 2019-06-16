@@ -3,26 +3,115 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width initial-scale=1.0'>
-    <title></title>
+    <title>Infatroid.io</title>
     <link rel="stylesheet" href="/style.css" />
     <script defer src="/bundle.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.0.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <style>
         * { padding: 0; margin: 0; }
       </style>
   </head>
   <body>
-      <div class='row'>
-        <div class='column'>
-          <canvas class='col' id='scoreBoard' width='200' height='320'></canvas>
-     
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1"> 
+        <button id="startButton" type="button">></button>
+      </div>
+    </div>
+
+    <div class="userFormArea" class="row">
+      <div class="col-md-12">
+        <form id="userForm">
+          <div class="form-group">
+            <label> Enter Username </label>
+            <input class="form-control" id="username" />
+            <br />
+            <input type="submit" class="btn btn-primary" value="Login"/> 
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="messageArea" class="row"> 
+      <div class="col-md-3"> 
+        <div class="well">
+            <canvas class='col' id='scoreBoard'></canvas>
         </div>
-        <div class='column'>
-          <canvas class='col' id="myCanvas" width="480" height="320"></canvas>
-         
-        </div>
-    
+      </div>
+
+      <div class="col-md-6"> 
+        <div class='row'>
+          <div class='column'>
+            <canvas class='col' id="myCanvas" width="580px" ></canvas>
+          </div>
        </div>
-      
+      </div>
+
+      <div class="col-md-3">
+        <div class="chat" id="chat"></div>
+
+        <form id="messageForm">
+          <div class="form-group">
+            <label> Enter Message </label>
+            <textarea class="form-control" id="message"></textarea>
+            <br />
+            <input type="submit" class="btn btn-primary" value="Send Message"/> 
+          </div>
+        </form>
+      </div>
+          </div>
+    </div> 
+  </div>      
+    <script>
+    $(function(){
+      var users; 
+      var socket = io.connect();
+      var $messageForm = $('#messageForm');
+      var $startButton = $('#startButton');
+      var $message = $('#message');
+      var $chat = $('#chat');
+      var $messageArea = $('#messageArea');
+      var $userFormArea = $('.userFormArea');
+      var $userForm = $('#userForm');
+      var $users = $('#users');
+      var $username = $('#username');
+
+      $messageForm.submit(function(e){
+        e.preventDefault();
+        socket.emit('send message', $message.val());
+        $message.val('');
+      });
+  
+      socket.on('new message', function(data){
+        $chat.append('<div class="well"><strong>' + data.user + '</strong>:' + data.msg + '</div>')
+      });
+
+      $userForm.submit(function(e){
+        e.preventDefault();
+        socket.emit('new user', $username.val(), function(data){
+          if(data){
+            $userFormArea.hide();
+            $messageArea.show();
+          }
+        });
+        $message.val('');
+      });
+
+      socket.on('get users', function(data){
+        var html = '';
+        for(i = 0; i < data.length; i++) {
+          html += '<li class="list-group-item">' + data[i] + '</li>';
+        }
+        $users.html(html);
+      }); 
+
+    var socket = io.connect();
+    data = {name: userName, userId: socket.id};
+    socket.emit('setSocketId', data);
+    });  
+  </script>
   </body>
 </html>

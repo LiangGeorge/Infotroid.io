@@ -7,6 +7,8 @@ const PORT = 3000
 const http = require('http')
 const server = http.createServer(app);
 const io = require('socket.io')(server);
+ users = [];
+connections = [];
 
 app.use(morgan('dev'))
 
@@ -20,6 +22,34 @@ app.get('/*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '..', 'index.html'))
 })
 
+io.sockets.on('connection', function(socket){
+  connections.push(socket);
+  console.log('Connected: %s sockets connected', connections.length);
+
+  socket.on('disconnect', function(data){
+    //if(!socket.username) return;
+    users.splice(users.indexOf(socket.username), 1);
+    updateUsernames();
+    connections.splice(connections.indexOf(socket), 1);
+    console.log('Disconnected: %s sockets disconnected', connections.length); 
+  });
+
+  socket.on('send message', function(data){
+    io.sockets.emit('new message', {msg: data, user: socket.username});
+  })
+
+  // New User
+  socket.on('new user', function(data, callback){
+    callback(true);
+    socket.username = data;
+    users.push(socket.username);
+    updateUsernames();
+  })
+
+  function updateUsernames() {
+    io.sockets.emit('get users', users);
+  }
+});
 
 app.use((req, res, next) => {
   const err = new Error('Not Found')
