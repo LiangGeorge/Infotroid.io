@@ -4,6 +4,13 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 users = [];
 connections = [];
+var userNames = {};
+
+socket.on('setSocketId' function(data) {
+    var userName = data.name;
+    var userId = data.userId;
+    userNames[userName] = userId;
+});
 
 server.listen(process.env.PORT || 3000);
 console.log('Server running...')
